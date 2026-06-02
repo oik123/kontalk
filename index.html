@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KonTalk 🎴</title>
+<!-- PWA: ئەمە دەکاتە ئەپی ڕەسمی، Android دەنگەکە نایکوژێتەوە -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KonTalk">
+<meta name="theme-color" content="#080c14">
+<link rel="manifest" href="/manifest.json">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#080c14;--card:#111827;--card2:#1a2235;--accent:#00e5ff;--green:#00ff88;--red:#ff3d5a;--text:#e0f0ff;--muted:#4a5568}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px 16px 40px;background-image:radial-gradient(ellipse at 20% 10%,rgba(0,229,255,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(0,255,136,0.05) 0%,transparent 50%)}
+.logo{font-size:2rem;font-weight:900;letter-spacing:2px;margin-bottom:2px;background:linear-gradient(135deg,var(--accent),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{font-size:0.8rem;color:var(--muted);margin-bottom:24px;text-align:center}
+.card{background:var(--card);border:1px solid rgba(0,229,255,0.12);border-radius:20px;padding:24px 20px;width:100%;max-width:400px;box-shadow:0 0 40px rgba(0,229,255,0.06)}
+.sec-title{font-size:0.72rem;color:var(--muted);letter-spacing:2px;margin-bottom:10px}
+input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,229,255,0.18);border-radius:12px;padding:12px 14px;color:var(--text);font-family:'Tajawal',sans-serif;font-size:1rem;outline:none;transition:border-color 0.2s;margin-bottom:14px}
+input:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
+.btn{width:100%;border:none;border-radius:12px;padding:13px;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;margin-bottom:10px}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#0077ff);color:#000}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,229,255,0.3)}
+.btn-secondary{background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.25);color:var(--accent)}
+.btn-danger{background:var(--red);color:#fff;box-shadow:0 4px 16px rgba(255,61,90,0.35)}
+.divider{text-align:center;color:var(--muted);font-size:0.78rem;margin:6px 0 14px;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:rgba(255,255,255,0.07)}
+.divider::before{right:0}.divider::after{left:0}
+.err{color:var(--red);font-size:0.82rem;text-align:center;min-height:18px;margin-bottom:8px}
+.app{display:none;width:100%;max-width:400px}
+.app.show{display:block}
+.setup.hide{display:none}
+.tabs{display:flex;background:var(--card2);border-radius:14px;padding:4px;margin-bottom:20px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--muted);transition:all 0.2s}
+.tab.active{background:var(--card);color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.friends-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.friend-item{background:var(--card2);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.06)}
+.friend-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;flex-shrink:0;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.friend-info{flex:1}
+.friend-name{font-weight:700;font-size:0.95rem}
+.friend-status{font-size:0.75rem;color:var(--muted);margin-top:2px}
+.friend-status.online{color:var(--green)}
+.friend-actions{display:flex;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s}
+.btn-call{background:rgba(0,255,136,0.15);color:var(--green)}
+.btn-call:hover{background:rgba(0,255,136,0.3)}
+.btn-remove{background:rgba(255,61,90,0.12);color:var(--red)}
+.empty-friends{text-align:center;color:var(--muted);padding:30px 0;font-size:0.9rem}
+.add-friend-row{display:flex;gap:8px;margin-bottom:0}
+.add-friend-row input{margin-bottom:0;flex:1}
+.add-friend-row .btn{width:auto;padding:12px 16px;margin-bottom:0}
+.pending-item{background:rgba(255,214,0,0.07);border:1px solid rgba(255,214,0,0.2);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pending-actions{display:flex;gap:6px;margin-right:auto}
+.btn-accept{background:rgba(0,255,136,0.15);color:var(--green);border:none;border-radius:8px;padding:6px 12px;font-family:'Tajawal',sans-serif;font-weight:700;cursor:pointer;font-size:0.85rem}
+.btn-reject{background:rgba(255,61,90,0.12);color:var(--red);border:none;border-radius:8px;padding:6px 12px;font-family:'Tajawal',sans-serif;font-weight:700;cursor:pointer;font-size:0.85rem}
+.profile-box{background:var(--card2);border-radius:16px;padding:20px;text-align:center;margin-bottom:16px}
+.profile-big-avatar{width:70px;height:70px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--accent),#0077ff);color:#000}
+.profile-username{font-size:1.1rem;font-weight:900;margin-bottom:4px}
+.profile-code{font-size:0.8rem;color:var(--muted)}
+.profile-code span{color:var(--accent);font-weight:700}
+.call-overlay{display:none;position:fixed;inset:0;background:rgba(8,12,20,0.97);z-index:100;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+.call-overlay.show{display:flex}
+.call-avatar-big{width:100px;height:100px;border-radius:50%;margin-bottom:16px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;font-weight:900;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;position:relative}
+.call-ring{position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(0,255,136,0.4);animation:ring 1.5s ease-out infinite}
+.call-ring2{position:absolute;inset:-16px;border-radius:50%;border:2px solid rgba(0,255,136,0.2);animation:ring 1.5s ease-out 0.5s infinite}
+@keyframes ring{0%{transform:scale(1);opacity:1}100%{transform:scale(1.2);opacity:0}}
+.call-name{font-size:1.5rem;font-weight:900;margin-bottom:6px}
+.call-status{font-size:0.9rem;color:var(--muted);margin-bottom:50px}
+.call-controls{display:flex;gap:20px;align-items:center}
+.call-btn{width:66px;height:66px;border-radius:50%;border:none;cursor:pointer;font-size:1.5rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
+.call-btn-mute{background:rgba(255,255,255,0.1)}
+.call-btn-mute.muted{background:rgba(255,61,90,0.2);border:1px solid var(--red)}
+.call-btn-end{background:var(--red);width:76px;height:76px;font-size:1.8rem;box-shadow:0 6px 24px rgba(255,61,90,0.5)}
+.incoming-overlay{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-radius:24px 24px 0 0;padding:30px 24px;z-index:200;border-top:1px solid rgba(0,229,255,0.15);box-shadow:0 -10px 40px rgba(0,0,0,0.5)}
+.incoming-overlay.show{display:block}
+.incoming-title{text-align:center;font-size:0.8rem;color:var(--muted);margin-bottom:8px}
+.incoming-name{text-align:center;font-size:1.4rem;font-weight:900;margin-bottom:24px}
+.incoming-btns{display:flex;gap:16px}
+.incoming-btns .btn{margin-bottom:0}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--green);color:#000;font-weight:700;padding:11px 22px;border-radius:30px;font-size:0.88rem;transition:transform 0.3s;z-index:300;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err-toast{background:var(--red);color:#fff}
+</style>
+</head>
+<body>
+
+<div class="logo">🎴 KonTalk</div>
+<p class="tagline">دەنگ بۆ کاتی یاری کۆنکان</p>
+
+<div class="card setup" id="setupCard">
+  <div class="sec-title">ئاکاونت دروست بکە</div>
+  <input id="regName" placeholder="ناوت..." maxlength="20" />
+  <input id="regEmail" placeholder="ئیمەیڵ..." type="email" />
+  <input id="regPass" placeholder="پاسۆرد (کەمەلایەن ٦ پیت)..." type="password" />
+  <button class="btn btn-primary" id="btnRegister">📝 ئاکاونت دروست بکە</button>
+  <div class="divider">ئاکاونتم هەیە</div>
+  <input id="loginEmail" placeholder="ئیمەیڵ..." type="email" />
+  <input id="loginPass" placeholder="پاسۆرد..." type="password" />
+  <button class="btn btn-secondary" id="btnLogin">🔑 چوونە ژوورەوە</button>
+  <div style="text-align:center;margin-bottom:8px">
+    <span id="btnForgot" style="color:#00e5ff;font-size:0.82rem;cursor:pointer;text-decoration:underline">وشەی نهێنیم بیرچووەتەوە؟</span>
+  </div>
+  <div class="divider">یان</div>
+  <button class="btn" id="btnGoogle" style="background:#fff;color:#222;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid #ddd">
+    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    چوونەژوورەوە بە Google
+  </button>
+  <div class="err" id="authErr"></div>
+</div>
+
+<div class="app" id="mainApp">
+
+  <!-- بانەری ئیجازەی مایکرۆفۆن — تەنها کاتێک پێویستە دەردەکەوێت -->
+  <div id="micBanner" style="display:none;background:linear-gradient(135deg,#ff3d5a,#c0002a);border-radius:14px;padding:14px 16px;margin-bottom:16px;text-align:center">
+    <div style="font-size:1rem;font-weight:900;margin-bottom:6px">⚙️ دوو ئیجازە پێویستن</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.8);margin-bottom:4px">🎤 مایکرۆفۆن — بۆ قسەکردن</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.8);margin-bottom:12px">🔔 ئاگادارکردنەوە — بۆ ئەوەی مایک لە پشت شاشەدا نەمرێت</div>
+    <button onclick="askBothPermissions()" style="background:#fff;color:#c0002a;border:none;border-radius:10px;padding:10px 24px;font-family:Tajawal,sans-serif;font-weight:900;font-size:0.95rem;cursor:pointer;width:100%">✅ هەر دووی چالاک بکە</button>
+  </div>
+
+  <div class="profile-box">
+    <div class="profile-big-avatar" id="profileAvatar">؟</div>
+    <div class="profile-username" id="profileName">-</div>
+    <div class="profile-code">کۆدی هاوڕێت: <span id="profileCode">-</span></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" id="tabFriends">هاوڕێکان 👥</div>
+    <div class="tab" id="tabAdd">زیادکردن ➕</div>
+    <div class="tab" id="tabPending">داواکاری 🔔</div>
+  </div>
+  <div id="paneFriends">
+    <div class="friends-list" id="friendsList">
+      <div class="empty-friends">هێشتا هاوڕێت نییە<br><small>بڕۆ بەشی زیادکردن</small></div>
+    </div>
+  </div>
+  <div id="paneAdd" style="display:none">
+    <div class="sec-title">کۆدی هاوڕێکەت بنووسە</div>
+    <div class="add-friend-row">
+      <input id="friendCodeInput" placeholder="بۆ نمونە: ABC123" maxlength="8" />
+      <button class="btn btn-primary" id="btnAddFriend" style="width:auto;padding:12px 16px">زیاد</button>
+    </div>
+    <div class="err" id="addErr" style="margin-top:10px"></div>
+  </div>
+  <div id="panePending" style="display:none">
+    <div class="sec-title">داواکاری هاوڕێیەتی</div>
+    <div id="pendingList"><div class="empty-friends">داواکاری نییە</div></div>
+  </div>
+  <br>
+  <button class="btn btn-secondary" id="btnLogout" style="opacity:0.6">دەرچوون</button>
+</div>
+
+<div class="call-overlay" id="callOverlay">
+  <div class="call-avatar-big" id="callAvatar">
+    <div class="call-ring"></div><div class="call-ring2"></div>؟
+  </div>
+  <div class="call-name" id="callName">-</div>
+  <div class="call-status" id="callStatus">پەیوەندی دەکرێت...</div>
+  <div class="call-controls">
+    <button class="call-btn call-btn-mute" id="muteBtn">🎤</button>
+    <button class="call-btn call-btn-end" id="btnEndCall">📵</button>
+  </div>
+</div>
+
+<div class="incoming-overlay" id="incomingOverlay">
+  <div class="incoming-title">📞 پەیوەندی دێت لە</div>
+  <div class="incoming-name" id="incomingName">-</div>
+  <div class="incoming-btns">
+    <button class="btn btn-danger" id="btnReject">رەتکردنەوە ❌</button>
+    <button class="btn btn-primary" id="btnAcceptCall">وەرگرتن ✅</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- بانەری نصبکردنی ئەپ — سەرەکیترین چارەسەر بۆ Android -->
+<div id="installBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(135deg,#00e5ff,#0077ff);padding:14px 16px;text-align:center;box-shadow:0 4px 20px rgba(0,229,255,0.4)">
+  <div style="font-size:0.85rem;font-weight:900;color:#000;margin-bottom:8px">📲 بۆ دەنگی باشتر — ئەپەکە نصب بکە!</div>
+  <div style="font-size:0.72rem;color:rgba(0,0,0,0.7);margin-bottom:10px">دەنگ لە پشتەوە ناقەتێت ئەگەر وەک ئەپ نصببکرێت</div>
+  <button id="btnInstall" style="background:#000;color:#00e5ff;border:none;border-radius:10px;padding:9px 24px;font-family:Tajawal,sans-serif;font-weight:900;font-size:0.9rem;cursor:pointer;margin-left:8px">📲 نصب بکە</button>
+  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:rgba(0,0,0,0.15);color:#000;border:none;border-radius:10px;padding:9px 16px;font-family:Tajawal,sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer">لاحقان</button>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================
+// PWA MANIFEST — دەکاتە ئەپی ڕەسمی لە Android
+// ============================================================
+// manifest.json لە فایلی دەرەکی بارکراوە
+
+// PWA Install prompt
+var deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBanner').style.display = 'block';
+});
+document.getElementById('btnInstall').onclick = function(){
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(function(){
+    document.getElementById('installBanner').style.display = 'none';
+    deferredInstallPrompt = null;
+  });
+};
+window.addEventListener('appinstalled', function(){
+  document.getElementById('installBanner').style.display = 'none';
+  showToast('✅ ئەپ نصبکرا! ئێستا دەنگ لە پشتەوە ناقەتێت');
+});
+
+// ============================================================
+// AUDIO KEEP-ALIVE — Chrome Android Fix
+// ئەمە چارەسەری سەرەکییە: مایکرۆفۆن stream دەبەستێتە AudioContext
+// کاتێک Chrome بەینێت AudioContext بەکارهاتووە، stream ناکوژێتەوە
+// ============================================================
+var audioCtx = null;
+var _micSourceNode = null;    // MediaStreamSource — stream زیندوو نیگەدار دەکات
+var _androidAudioNodes = null;
+
+function unlockAudioContext(){
+  if(audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    console.log('AudioContext created, state:', audioCtx.state);
+  } catch(e) { console.log('AudioContext error:', e); }
+}
+
+// مایکرۆفۆن stream بە AudioContext ببەستە — Chrome ئەمە ناکوژێتەوە
+function anchorStreamToAudioContext(stream){
+  if(!stream) return;
+  if(!audioCtx) unlockAudioContext();
+  if(!audioCtx) return;
+  try {
+    // source کۆنەکە بکوژێنە
+    if(_micSourceNode){ try{ _micSourceNode.disconnect(); }catch(e){} _micSourceNode = null; }
+    // stream نوێ بە AudioContext ببەستە
+    _micSourceNode = audioCtx.createMediaStreamSource(stream);
+    // destination بە gain نزیک بە سفر — دەنگی دواتر نادرێت بەڵام stream زیندووە
+    var silentGain = audioCtx.createGain();
+    silentGain.gain.value = 0.00001;
+    _micSourceNode.connect(silentGain);
+    silentGain.connect(audioCtx.destination);
+    console.log('Stream anchored to AudioContext');
+  } catch(e){ console.log('anchorStream error:', e); }
+}
+
+function resumeAudioContext(){
+  if(!audioCtx) return;
+  if(audioCtx.state === 'suspended'){
+    audioCtx.resume().catch(function(){});
+  }
+}
+
+function forceAndroidAudioResume(){
+  if(!audioCtx) unlockAudioContext();
+  if(!audioCtx) return;
+  if(audioCtx.state === 'suspended'){
+    audioCtx.resume().then(function(){
+      // دووبارە ببەستە ئەگەر بڕی بوو
+      if(localStream) anchorStreamToAudioContext(localStream);
+    }).catch(function(){});
+  }
+  // oscillator بێدەنگ — AudioContext زیندوو نیگەدار دەکات
+  if(!_androidAudioNodes){
+    try {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      gain.gain.value = 0.00001;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      _androidAudioNodes = { osc: osc, gain: gain };
+    } catch(e){}
+  }
+}
+
+// هەر کلیکێک AudioContext ئەکاتەوە
+document.addEventListener('click', unlockAudioContext, { once: true });
+document.addEventListener('touchstart', unlockAudioContext, { once: true });
+
+// هەر ٣ چرکەیەک AudioContext چەک بکە
+setInterval(function(){
+  if(currentCallUid) forceAndroidAudioResume();
+}, 3000);
+
+firebase.initializeApp({
+  apiKey: "AIzaSyAE2RsucvSHGZKi9YagZdt8zEF3s1FIN10",
+  authDomain: "chat-e22a7.firebaseapp.com",
+  databaseURL: "https://chat-e22a7-default-rtdb.firebaseio.com",
+  projectId: "chat-e22a7",
+  storageBucket: "chat-e22a7.firebasestorage.app",
+  messagingSenderId: "1054867219766",
+  appId: "1:1054867219766:web:a3c377aaec416977303f97"
+});
+const auth = firebase.auth();
+const db = firebase.database();
+
+// State
+let me = null;
+let localStream = null;
+let peerConn = null;
+let currentCallUid = null;
+let isMuted = false;
+let incomingCallData = null;
+let friendsListener = null;
+let requestsListener = null;
+let incomingListener = null;
+
+// Helpers
+function G(id){ return document.getElementById(id) }
+function showToast(msg, isErr){
+  const t = G('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err-toast' : '');
+  setTimeout(()=>{ t.className='toast'; }, 2500);
+}
+function genCode(){
+  return Math.random().toString(36).substr(2,6).toUpperCase();
+}
+function avatarLetter(name){ return (name||'؟')[0].toUpperCase(); }
+
+// Buttons
+G('btnRegister').onclick = function(){
+  var name = G('regName').value.trim();
+  var email = G('regEmail').value.trim();
+  var pass = G('regPass').value;
+  G('authErr').textContent = '';
+  if(!name||!email||!pass){ G('authErr').textContent='هەموو خانەکان پڕ بکەرەوە!'; return; }
+  if(pass.length < 6){ G('authErr').textContent='پاسۆرد کەمەلایەن ٦ پیت بێت!'; return; }
+  G('btnRegister').textContent = '⏳ چاوەڕێ بکە...';
+  auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
+    var code = genCode();
+    var uid = cred.user.uid;
+    var userData = { name:name, code:code, uid:uid, online:true };
+    db.ref('users/'+uid).set(userData).then(function(){
+      return db.ref('codes/'+code).set(uid);
+    }).then(function(){
+      G('btnRegister').textContent = '📝 ئاکاونت دروست بکە';
+      me = userData;
+      showToast('✅ خوشت هات ' + name + '!');
+      showApp();
+      listenFriends();
+      listenIncoming();
+      startHeartbeat();
+    }).catch(function(err){
+      G('btnRegister').textContent = '📝 ئاکاونت دروست بکە';
+      G('authErr').textContent = 'هەڵەی داتابەیس: ' + err.message;
+    });
+  }).catch(function(e){
+    G('btnRegister').textContent = '📝 ئاکاونت دروست بکە';
+    if(e.code==='auth/email-already-in-use') G('authErr').textContent='ئیمەیڵەکە بەکارهاتووە! ئیمەیڵی تر بەکاربهێنە';
+    else if(e.code==='auth/invalid-email') G('authErr').textContent='ئیمەیڵ هەڵەیە!';
+    else if(e.code==='auth/weak-password') G('authErr').textContent='پاسۆرد کەمەلایەن ٦ پیت بێت!';
+    else G('authErr').textContent = '❌ هەڵە: ' + e.message;
+  });
+};
+
+G('btnLogin').onclick = function(){
+  var email = G('loginEmail').value.trim();
+  var pass = G('loginPass').value;
+  G('authErr').textContent = '';
+  if(!email||!pass){ G('authErr').textContent='ئیمەیڵ و پاسۆرد بنووسە!'; return; }
+  G('btnLogin').textContent = '⏳ چاوەڕێ بکە...';
+  auth.signInWithEmailAndPassword(email, pass).then(function(cred){
+    // Check if user data exists in database, if not create it
+    return db.ref('users/'+cred.user.uid).once('value').then(function(snap){
+      if(!snap.exists()){
+        // User exists in Auth but not in DB, ask for name
+        G('authErr').style.color = '#00e5ff';
+        G('authErr').textContent = 'تکایە ناوت بنووسە بۆ تەواوکردنی پرۆفایلەکەت';
+        G('btnLogin').textContent = '🔑 چوونە ژوورەوە';
+        // Show name fix UI
+        var nameDiv = document.getElementById('fixNameDiv');
+        if(!nameDiv){
+          nameDiv = document.createElement('div');
+          nameDiv.id = 'fixNameDiv';
+          nameDiv.style.marginTop = '8px';
+          nameDiv.innerHTML = '<input id="fixNameInput" placeholder="ناوت..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,229,255,0.18);border-radius:12px;padding:12px 14px;color:#e0f0ff;font-family:Tajawal,sans-serif;font-size:1rem;outline:none;margin-bottom:8px"/><button class="btn btn-primary" id="fixNameBtn">✅ پرۆفایل درست بکە</button>';
+          G('authErr').parentNode.insertBefore(nameDiv, G('authErr').nextSibling);
+          document.getElementById('fixNameBtn').onclick = function(){
+            var fixName = document.getElementById('fixNameInput').value.trim();
+            if(!fixName){ G('authErr').textContent='ناوت بنووسە!'; return; }
+            var code = genCode();
+            db.ref('users/'+cred.user.uid).set({ name:fixName, code:code, uid:cred.user.uid, online:true }).then(function(){
+              return db.ref('codes/'+code).set(cred.user.uid);
+            }).then(function(){
+              nameDiv.remove();
+              G('authErr').textContent='';
+              showToast('✅ خوشت هات ' + fixName + '!');
+            });
+          };
+        }
+      }
+    });
+  }).catch(function(e){
+    G('btnLogin').textContent = '🔑 چوونە ژوورەوە';
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'||e.code==='auth/user-not-found'){
+      G('authErr').textContent = 'ئیمەیڵ یان پاسۆرد هەڵەیە!';
+    } else if(e.code==='auth/too-many-requests'){
+      G('authErr').textContent = 'زۆر جار هەوڵتدا، کەمێک چاوەڕێ بکە!';
+    } else {
+      G('authErr').textContent = 'ئیمەیڵ یان پاسۆرد هەڵەیە!';
+    }
+  });
+};
+
+G('btnForgot').onclick = function(){
+  var email = G('loginEmail').value.trim();
+  G('authErr').textContent = '';
+  if(!email){ G('authErr').textContent='پێشتر ئیمەیڵەکەت بنووسە!'; return; }
+  auth.sendPasswordResetEmail(email).then(function(){
+    showToast('✅ ئیمەیڵی گەڕاندنەوەی پاسۆرد نێردرا!');
+  }).catch(function(e){
+    if(e.code==='auth/user-not-found') G('authErr').textContent='ئەم ئیمەیڵە تۆمارنەکراوە!';
+    else if(e.code==='auth/invalid-email') G('authErr').textContent='ئیمەیڵ هەڵەیە!';
+    else G('authErr').textContent='هەڵەیەک ڕوویدا، دووبارە هەوڵبدەرەوە!';
+  });
+};
+
+G('btnGoogle').onclick = function(){
+  var provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).then(function(result){
+    var user = result.user;
+    db.ref('users/'+user.uid).once('value').then(function(snap){
+      if(snap.exists()){
+        // Already has profile
+        me = snap.val();
+        showApp();
+        listenFriends();
+        listenIncoming();
+        db.ref('users/'+me.uid).update({ online:true });
+      } else {
+        // New Google user - create profile
+        var code = genCode();
+        var name = user.displayName || user.email.split('@')[0];
+        var userData = { name:name, code:code, uid:user.uid, online:true };
+        db.ref('users/'+user.uid).set(userData).then(function(){
+          return db.ref('codes/'+code).set(user.uid);
+        }).then(function(){
+          me = userData;
+          showToast('✅ خوشت هات ' + name + '!');
+          showApp();
+          listenFriends();
+          listenIncoming();
+        });
+      }
+    });
+  }).catch(function(e){
+    G('authErr').textContent = 'هەڵەیەک ڕوویدا: ' + e.message;
+  });
+};
+
+G('btnLogout').onclick = function(){
+  endCall();
+  if(me) db.ref('users/'+me.uid).update({ online:false });
+  auth.signOut();
+};
+
+// Auth state
+auth.onAuthStateChanged(function(user){
+  if(user){
+    function tryLoadUser(attempts){
+      db.ref('users/'+user.uid).once('value').then(function(snap){
+        if(!snap.exists()){
+          if(attempts > 0){
+            setTimeout(function(){ tryLoadUser(attempts-1); }, 1500);
+          } else {
+            // User in Auth but no DB record — ask for name
+            G('setupCard').className = 'card setup';
+            G('mainApp').className = 'app';
+            G('authErr').style.color = '#00e5ff';
+            G('authErr').textContent = 'تکایە ناوت بنووسە بۆ تەواوکردنی پرۆفایلەکەت';
+            var nameDiv = document.getElementById('fixNameDiv');
+            if(!nameDiv){
+              nameDiv = document.createElement('div');
+              nameDiv.id = 'fixNameDiv';
+              nameDiv.style.cssText = 'margin-top:10px';
+              nameDiv.innerHTML = '<input id="fixNameInput" placeholder="ناوت..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,229,255,0.18);border-radius:12px;padding:12px 14px;color:#e0f0ff;font-family:Tajawal,sans-serif;font-size:1rem;outline:none;margin-bottom:8px"/><button class="btn btn-primary" id="fixNameBtn" style="width:100%;border:none;border-radius:12px;padding:13px;font-family:Tajawal,sans-serif;font-size:1rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#00e5ff,#0077ff);color:#000">✅ پرۆفایل درست بکە</button>';
+              G('authErr').parentNode.appendChild(nameDiv);
+              document.getElementById('fixNameBtn').onclick = function(){
+                var fixName = document.getElementById('fixNameInput').value.trim();
+                if(!fixName){ G('authErr').textContent='ناوت بنووسە!'; return; }
+                var code = genCode();
+                db.ref('users/'+user.uid).set({ name:fixName, code:code, uid:user.uid, online:true }).then(function(){
+                  return db.ref('codes/'+code).set(user.uid);
+                }).then(function(){
+                  nameDiv.remove();
+                  G('authErr').textContent='';
+                  G('authErr').style.color='';
+                  showToast('✅ خوشت هات ' + fixName + '!');
+                  me = { name:fixName, code:code, uid:user.uid, online:true };
+                  showApp();
+                  listenFriends();
+                  listenIncoming();
+                });
+              };
+            }
+          }
+          return;
+        }
+        me = snap.val();
+        showApp();
+        listenFriends();
+        listenIncoming();
+        db.ref('users/'+me.uid).update({ online:true });
+        startHeartbeat();
+      });
+    }
+    tryLoadUser(5);
+  } else {
+    me = null;
+    stopHeartbeat();
+    showSetup();
+  }
+});
+
+function showApp(){
+  G('setupCard').className = 'card setup hide';
+  G('mainApp').className = 'app show';
+  G('profileAvatar').textContent = avatarLetter(me.name);
+  G('profileName').textContent = me.name;
+  G('profileCode').textContent = me.code;
+  checkMicPermission();
+  // دەستبێجێ notification ئیجازە داوا بکە — پێویستە بۆ مایکزیندوونگەداری
+  requestNotificationPermission();
+}
+
+function checkMicPermission(){
+  // هەر دوو ئیجازە چەک بکە
+  var micOk = false, notifOk = false;
+
+  function updateBanner(){
+    if(micOk && notifOk) hideMicBanner();
+    else showMicBanner();
+  }
+
+  // مایکرۆفۆن چەک بکە
+  if(navigator.permissions){
+    navigator.permissions.query({name:'microphone'}).then(function(r){
+      micOk = r.state === 'granted';
+      r.onchange = function(){ micOk = r.state === 'granted'; updateBanner(); };
+      updateBanner();
+    }).catch(function(){ showMicBanner(); });
+  } else { showMicBanner(); return; }
+
+  // Notification چەک بکە
+  if('Notification' in window){
+    notifOk = Notification.permission === 'granted';
+    updateBanner();
+  } else {
+    notifOk = true; // ئەگەر پشتگیری ناکات، ئێمە پێی دەگین باشە
+    updateBanner();
+  }
+}
+
+// هەر دوو ئیجازە بخوازە یەک کاتدا
+function askBothPermissions(){
+  // پێشی مایک داوا بکە
+  if(!navigator || !navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function'){
+    showMicError('بروزەرەکەت مایکرۆفۆن پشتگیری ناکات');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({audio:true, video:false})
+    .then(function(stream){
+      localStream = stream;
+      anchorStreamToAudioContext(stream);
+      // دواتر notification داوا بکە
+      if('Notification' in window && Notification.permission !== 'granted'){
+        return Notification.requestPermission();
+      }
+      return Promise.resolve('granted');
+    })
+    .then(function(notifResult){
+      hideMicBanner();
+      hideMicError();
+      if(notifResult === 'granted'){
+        showToast('✅ مایکرۆفۆن و ئاگادارکردنەوە چالاک بون!');
+      } else {
+        showToast('✅ مایکرۆفۆن چالاک بوو — ئاگادارکردنەوە پێویستە بۆ مایکی باشتر');
+      }
+    })
+    .catch(function(err){
+      var n = err ? (err.name || '') : '';
+      if(n === 'NotAllowedError' || n === 'PermissionDeniedError'){
+        showMicPermissionGuide();
+      } else {
+        showMicError('کێشەی مایکرۆفۆن: ' + (n || err));
+      }
+    });
+}
+
+function showMicBanner(){ var b = G('micBanner'); if(b) b.style.display='block'; }
+function hideMicBanner(){ var b = G('micBanner'); if(b) b.style.display='none'; }
+
+function askMicPermission(){
+  try {
+    if(!navigator || !navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function'){
+      showMicError('بروزەرەکەت مایکرۆفۆن پشتگیری ناکات');
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({audio:true, video:false})
+      .then(function(stream){
+        // stream ئەمێنێتەوە تا کاتی پەیوەندی — نایکوژینینەوە
+        localStream = stream;
+        anchorStreamToAudioContext(stream);
+        hideMicBanner();
+        hideMicError();
+        showToast('✅ مایکرۆفۆن چالاک بوو!');
+      })
+      .catch(function(err){
+        var n = err ? (err.name || '') : '';
+        if(n === 'NotAllowedError' || n === 'PermissionDeniedError'){
+          showMicPermissionGuide();
+        } else {
+          showMicError('کێشەی مایکرۆفۆن: ' + (n || err));
+        }
+      });
+  } catch(e){
+    showMicError('هەڵە: ' + (e.message || e));
+  }
+}
+function showSetup(){
+  G('setupCard').className = 'card setup';
+  G('mainApp').className = 'app';
+}
+
+// Tabs
+G('tabFriends').onclick = function(){ switchTab('friends'); };
+G('tabAdd').onclick = function(){ switchTab('add'); };
+G('tabPending').onclick = function(){ switchTab('pending'); };
+
+function switchTab(tab){
+  G('paneFriends').style.display = tab==='friends'?'block':'none';
+  G('paneAdd').style.display = tab==='add'?'block':'none';
+  G('panePending').style.display = tab==='pending'?'block':'none';
+  G('tabFriends').className = 'tab'+(tab==='friends'?' active':'');
+  G('tabAdd').className = 'tab'+(tab==='add'?' active':'');
+  G('tabPending').className = 'tab'+(tab==='pending'?' active':'');
+}
+
+// Friends
+function listenFriends(){
+  db.ref('users/'+me.uid+'/friends').on('value', function(snap){
+    renderFriends(snap.val()||{});
+  });
+  db.ref('users/'+me.uid+'/requests').on('value', function(snap){
+    var reqs = snap.val()||{};
+    renderPending(reqs);
+    var count = Object.keys(reqs).length;
+    G('tabPending').textContent = count>0 ? 'داواکاری 🔔 ('+count+')' : 'داواکاری 🔔';
+  });
+}
+
+function renderFriends(friends){
+  var list = G('friendsList');
+  var uids = Object.keys(friends);
+  if(!uids.length){
+    list.innerHTML='<div class="empty-friends">هێشتا هاوڕێت نییە<br><small>بڕۆ بەشی زیادکردن</small></div>';
+    return;
+  }
+  list.innerHTML = '';
+  uids.forEach(function(uid){
+    db.ref('users/'+uid).once('value').then(function(snap){
+      if(!snap.exists()) return;
+      var f = snap.val();
+      var online = f.online===true;
+      var div = document.createElement('div');
+      div.className = 'friend-item';
+      div.innerHTML =
+        '<div class="friend-avatar">'+avatarLetter(f.name)+'</div>'+
+        '<div class="friend-info">'+
+          '<div class="friend-name">'+f.name+'</div>'+
+          '<div class="friend-status '+(online?'online':'')+'">'+( online?'🟢 ئۆنلاینە':'⚫ ئۆفلاینە')+'</div>'+
+        '</div>'+
+        '<div class="friend-actions">'+
+          '<button class="icon-btn btn-call" data-uid="'+uid+'" data-name="'+f.name+'" title="پەیوەندی">📞</button>'+
+          '<button class="icon-btn btn-remove" data-uid="'+uid+'" title="سڕینەوە">🗑</button>'+
+        '</div>';
+      div.querySelector('.btn-call').onclick = function(){
+        startCall(this.dataset.uid, this.dataset.name);
+      };
+      div.querySelector('.btn-remove').onclick = function(){
+        removeFriend(this.dataset.uid);
+      };
+      list.appendChild(div);
+    });
+  });
+}
+
+function renderPending(reqs){
+  var list = G('pendingList');
+  var items = Object.entries(reqs);
+  if(!items.length){ list.innerHTML='<div class="empty-friends">داواکاری نییە</div>'; return; }
+  list.innerHTML = '';
+  items.forEach(function(entry){
+    var uid = entry[0]; var data = entry[1];
+    var div = document.createElement('div');
+    div.className = 'pending-item';
+    div.innerHTML =
+      '<div class="friend-avatar" style="width:38px;height:38px;font-size:1rem">'+avatarLetter(data.name)+'</div>'+
+      '<div style="flex:1;font-weight:700">'+data.name+'</div>'+
+      '<div class="pending-actions">'+
+        '<button class="btn-accept" data-uid="'+uid+'" data-name="'+data.name+'">✅</button>'+
+        '<button class="btn-reject" data-uid="'+uid+'">❌</button>'+
+      '</div>';
+    div.querySelector('.btn-accept').onclick = function(){
+      acceptFriend(this.dataset.uid, this.dataset.name);
+    };
+    div.querySelector('.btn-reject').onclick = function(){
+      rejectFriend(this.dataset.uid);
+    };
+    list.appendChild(div);
+  });
+}
+
+G('btnAddFriend').onclick = function(){
+  var code = G('friendCodeInput').value.trim().toUpperCase();
+  G('addErr').textContent = '';
+  if(!code){ G('addErr').textContent='کۆد بنووسە!'; return; }
+  if(code===me.code){ G('addErr').textContent='کۆدی خۆتە!'; return; }
+  db.ref('codes/'+code).once('value').then(function(snap){
+    if(!snap.exists()){ G('addErr').textContent='کۆد نەدۆزرایەوە!'; return; }
+    var theirUid = snap.val();
+    db.ref('users/'+me.uid+'/friends/'+theirUid).once('value').then(function(fs){
+      if(fs.exists()){ G('addErr').textContent='پێشتر هاوڕێتە!'; return; }
+      db.ref('users/'+theirUid+'/requests/'+me.uid).set({ name:me.name, code:me.code });
+      G('friendCodeInput').value = '';
+      showToast('✅ داواکاری نێردرا!');
+    });
+  });
+};
+
+function acceptFriend(uid, name){
+  db.ref('users/'+me.uid+'/friends/'+uid).set(true);
+  db.ref('users/'+uid+'/friends/'+me.uid).set(true);
+  db.ref('users/'+me.uid+'/requests/'+uid).remove();
+  showToast('✅ '+name+' هاوڕێت بوو!');
+  switchTab('friends');
+}
+
+function rejectFriend(uid){
+  db.ref('users/'+me.uid+'/requests/'+uid).remove();
+}
+
+function removeFriend(uid){
+  db.ref('users/'+me.uid+'/friends/'+uid).remove();
+  db.ref('users/'+uid+'/friends/'+me.uid).remove();
+  showToast('سڕایەوە');
+}
+
+// ============================================================
+// BACKGROUND KEEP-ALIVE SYSTEM
+// ============================================================
+
+// --- عەنصەری دەنگی دووربوون: لە DOM دامەزرێنرێت تا garbage collected نەبێت ---
+var remoteAudioEl = document.createElement('audio');
+remoteAudioEl.autoplay = true;
+remoteAudioEl.setAttribute('playsinline', '');    // iOS پێویستی پێیە
+remoteAudioEl.setAttribute('webkit-playsinline', '');
+document.body.appendChild(remoteAudioEl);
+
+// --- عەنصەری دەنگی بێدەنگ: ئێجازی دەنگی بەکارهێنان لە پاشەوەی دەگیرێتەوە ---
+// دەنگی 1-چرکەیی بێدەنگ wav بە base64 — بروزەرەکان بۆی ئەگەن پلەی بکەن
+var SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAA' +
+  'EAAQAAwF0AAIC7AAACABAAZGFUYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=';
+var keepAliveAudio = document.createElement('audio');
+keepAliveAudio.src = SILENT_WAV;
+keepAliveAudio.loop = true;
+keepAliveAudio.volume = 0.001;
+keepAliveAudio.setAttribute('playsinline', '');
+document.body.appendChild(keepAliveAudio);
+
+function startSilentAudio() {
+  keepAliveAudio.play().catch(function(){});
+  if(!audioCtx) unlockAudioContext();
+  forceAndroidAudioResume();
+  // stream ئەگەر ئامادەیە ببەستە
+  if(localStream) anchorStreamToAudioContext(localStream);
+}
+function stopSilentAudio() {
+  keepAliveAudio.pause();
+  keepAliveAudio.currentTime = 0;
+}
+
+// --- MediaSession: ڕێگری لە بڕینی دەنگ لە لۆک-ئەسکرین ---
+function setupMediaSession(name) {
+  if(!('mediaSession' in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: '📞 ' + name,
+    artist: 'KonTalk',
+    album: 'پەیوەندی کۆنکان'
+  });
+  navigator.mediaSession.setActionHandler('pause', function(){ /* ڕێگری */ });
+  navigator.mediaSession.setActionHandler('stop', function(){ endCall(); });
+  navigator.mediaSession.playbackState = 'playing';
+}
+function clearMediaSession() {
+  if(!('mediaSession' in navigator)) return;
+  navigator.mediaSession.setActionHandler('pause', null);
+  navigator.mediaSession.setActionHandler('stop', null);
+  navigator.mediaSession.playbackState = 'none';
+}
+
+// --- Wake Lock: شاشە قەفڵ نەبێت ---
+var wakeLock = null;
+async function requestWakeLock() {
+  if(!('wakeLock' in navigator)) return;
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', function(){ wakeLock = null; });
+  } catch(e) {}
+}
+async function releaseWakeLock() {
+  if(wakeLock){ try{ await wakeLock.release(); }catch(e){} wakeLock = null; }
+}
+
+// --- Visibility Change: کاتێک دێتەوە ناو تاب ---
+document.addEventListener('visibilitychange', async function() {
+  if(document.visibilityState === 'visible') {
+    if(me) db.ref('users/'+me.uid).update({ online: true });
+    if(currentCallUid) {
+      forceAndroidAudioResume();
+      if(localStream) anchorStreamToAudioContext(localStream);
+      try { keepAliveAudio.play().catch(function(){}); } catch(e){}
+      await requestWakeLock();
+      if(remoteAudioEl.paused && remoteAudioEl.srcObject){
+        remoteAudioEl.play().catch(function(){});
+      }
+      var connState = peerConn ? peerConn.connectionState : 'closed';
+      if(connState === 'disconnected' || connState === 'failed' || connState === 'closed'){
+        G('callStatus').textContent = '🔄 دووبارە وەصڵ دەبێتەوە...';
+        tryReconnect();
+      }
+      // مایک: monitor هەر ٣ چرکەیەک خۆکارانە نوێ دەکاتەوە
+    }
+  } else {
+    if(currentCallUid){ try { keepAliveAudio.play().catch(function(){}); } catch(e){} }
+  }
+});
+
+// دوگمەی چالاककردنەوەی مایک — پێویستە بەکارهێنەر کلیک بکات
+var micRestoreBtn = null;
+function showMicRestoreBtn(){
+  if(micRestoreBtn) return;
+  micRestoreBtn = document.createElement('button');
+  micRestoreBtn.textContent = '🎤 مایک چالاک بکەرەوە';
+  micRestoreBtn.style.cssText = 'position:fixed;bottom:160px;left:50%;transform:translateX(-50%);background:#00e5ff;color:#000;border:none;border-radius:30px;padding:14px 28px;font-family:Tajawal,sans-serif;font-weight:900;font-size:1rem;cursor:pointer;z-index:200;box-shadow:0 4px 20px rgba(0,229,255,0.5);animation:pulse 1s ease-in-out infinite alternate';
+  // animation زیاد بکە
+  if(!document.getElementById('micBtnStyle')){
+    var s = document.createElement('style');
+    s.id = 'micBtnStyle';
+    s.textContent = '@keyframes pulse{from{box-shadow:0 4px 20px rgba(0,229,255,0.4)}to{box-shadow:0 4px 30px rgba(0,229,255,0.9);transform:translateX(-50%) scale(1.05)}}';
+    document.head.appendChild(s);
+  }
+  micRestoreBtn.onclick = function(){
+    hideMicRestoreBtn();
+    repairAndroidMic();
+  };
+  document.body.appendChild(micRestoreBtn);
+  // ئەگەر ٨ چرکە کلیک نەکرد، خۆی هەوڵ بدات
+  setTimeout(function(){
+    if(micRestoreBtn) repairAndroidMic();
+  }, 8000);
+}
+function hideMicRestoreBtn(){
+  if(micRestoreBtn){ micRestoreBtn.remove(); micRestoreBtn = null; }
+}
+function repairAndroidMic() {
+  if(!currentCallUid || !peerConn) return;
+  navigator.mediaDevices.getUserMedia({
+    audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true, channelCount:1 },
+    video:false
+  }).then(function(newStream){
+    hideMicRestoreBtn();
+    if(localStream && localStream !== newStream){
+      localStream.getTracks().forEach(function(t){ t.stop(); });
+    }
+    localStream = newStream;
+    // Chrome Android Fix: stream نوێ بە AudioContext ببەستە
+    anchorStreamToAudioContext(newStream);
+    var newTrack = newStream.getAudioTracks()[0];
+    if(!newTrack) return;
+    var senders = peerConn.getSenders();
+    var replaced = false;
+    senders.forEach(function(sender){
+      if(sender.track && sender.track.kind === 'audio'){
+        sender.replaceTrack(newTrack).catch(function(){});
+        replaced = true;
+      }
+    });
+    if(!replaced) peerConn.addTrack(newTrack, newStream);
+    if('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
+  }).catch(function(){
+    // Chrome مۆڵەت نەدا — دوگمەکە نیشان بدە
+    showMicRestoreBtn();
+  });
+}
+
+// Android: هەر ٣ چرکەیەک مایک نوێ دەکاتەوە — Chrome ناتوانێت بیکوژێتەوە
+var androidTrackInterval = null;
+var _repairBusy = false; // ڕێگری لە دووبارەکانی هاوکاتی
+
+function startAndroidTrackMonitor() {
+  stopAndroidTrackMonitor();
+  androidTrackInterval = setInterval(function(){
+    if(!currentCallUid){ stopAndroidTrackMonitor(); return; }
+
+    // AudioContext زیندوو بکەرەوە
+    forceAndroidAudioResume();
+
+    // remote audio چەک بکە
+    if(remoteAudioEl.paused && remoteAudioEl.srcObject){
+      remoteAudioEl.play().catch(function(){});
+    }
+
+    // ئەگەر mute کراوە، مایک نوێ ناکەینەوە
+    if(isMuted) return;
+    // ئەگەر کاریگەری تردا بووین، چاوەڕوان بکە
+    if(_repairBusy) return;
+    // ئەگەر peerConn نییە، چاوەڕوان بکە
+    if(!peerConn) return;
+
+    // هەمیشە مایک نوێ دەکەینەوە — Chrome ناتوانێت بیکوژێتەوە
+    _repairBusy = true;
+    navigator.mediaDevices.getUserMedia({
+      audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true, channelCount:1 },
+      video:false
+    }).then(function(newStream){
+      _repairBusy = false;
+      if(!currentCallUid || !peerConn){
+        newStream.getTracks().forEach(function(t){ t.stop(); });
+        return;
+      }
+      // stream کۆنەکە بکوژێنە
+      if(localStream && localStream !== newStream){
+        localStream.getTracks().forEach(function(t){ t.stop(); });
+      }
+      localStream = newStream;
+      anchorStreamToAudioContext(newStream);
+
+      // track نوێ بنێرە بۆ هاوڕێکەت
+      var newTrack = newStream.getAudioTracks()[0];
+      if(!newTrack) return;
+      newTrack.enabled = true; // دڵنیابوون enabled ە
+      var senders = peerConn.getSenders();
+      senders.forEach(function(sender){
+        if(sender.track && sender.track.kind === 'audio'){
+          sender.replaceTrack(newTrack).catch(function(){});
+        }
+      });
+    }).catch(function(){
+      _repairBusy = false;
+      // Chrome مۆڵەت نەدا — ئەمە کێشەیە، بەڵام بەردەوام هەوڵدەدەین
+    });
+  }, 3000);
+}
+function stopAndroidTrackMonitor() {
+  if(androidTrackInterval){ clearInterval(androidTrackInterval); androidTrackInterval = null; }
+  _repairBusy = false;
+}
+
+// --- Firebase Heartbeat: لە کاتی پەیوەندی هەر ١٠ چرکەیەک، تر هەر ٣٠ چرکەیەک ---
+var heartbeatInterval = null;
+function startHeartbeat(fast) {
+  stopHeartbeat();
+  var interval = fast ? 10000 : 30000;
+  heartbeatInterval = setInterval(function(){
+    if(me) db.ref('users/'+me.uid).update({ online: true, lastSeen: Date.now() });
+    if(currentCallUid) resumeAudioContext();
+  }, interval);
+}
+function stopHeartbeat() {
+  if(heartbeatInterval){ clearInterval(heartbeatInterval); heartbeatInterval = null; }
+}
+
+// --- ICE Monitor + ئۆتۆماتیک دووبارە وەصڵبوون ---
+var reconnectAttempts = 0;
+var reconnectTimer = null;
+var isReconnecting = false;
+
+function setupPeerConnectionMonitor(pc) {
+  pc.addEventListener('connectionstatechange', function() {
+    var s = pc.connectionState;
+    if(s === 'connected') {
+      G('callStatus').textContent = '🟢 وەصڵبووە';
+      reconnectAttempts = 0;
+      isReconnecting = false;
+      if(reconnectTimer){ clearTimeout(reconnectTimer); reconnectTimer = null; }
+    } else if(s === 'disconnected') {
+      G('callStatus').textContent = '⚠️ دووبارە وەصڵ دەبێتەوە...';
+      reconnectTimer = setTimeout(function(){
+        if(pc.connectionState === 'disconnected' || pc.connectionState === 'failed'){
+          tryReconnect();
+        }
+      }, 3000);
+    } else if(s === 'failed') {
+      tryReconnect();
+    }
+  });
+  pc.addEventListener('iceconnectionstatechange', function(){
+    if(pc.iceConnectionState === 'failed') tryReconnect();
+  });
+}
+
+function tryReconnect(){
+  if(isReconnecting || !currentCallUid) return;
+  if(reconnectAttempts >= 5){
+    showToast('❌ پەیوەندی بڕی', true);
+    endCall();
+    return;
+  }
+  isReconnecting = true;
+  reconnectAttempts++;
+  G('callStatus').textContent = '🔄 دووبارە وەصڵ دەبێتەوە (' + reconnectAttempts + '/5)...';
+
+  // پەیوەندی کۆنەکە ببەستە
+  if(peerConn){ try{ peerConn.close(); }catch(e){} peerConn = null; }
+
+  // مایکرۆفۆن کۆنەکە بکوژێنە — stream نوێ دەگرین
+  if(localStream){ localStream.getTracks().forEach(function(t){ t.stop(); }); localStream = null; }
+
+  // stream نوێ بگرە
+  if(!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function'){
+    isReconnecting = false; return;
+  }
+  navigator.mediaDevices.getUserMedia({
+    audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true, channelCount:1 },
+    video:false
+  }).then(function(freshStream){
+    localStream = freshStream;
+    if(!currentCallUid){ isReconnecting = false; return; }
+    var uid = currentCallUid;
+
+    if(!_iAmCallee){
+      // CALLER: offer نوێ دروست بکە
+      peerConn = new RTCPeerConnection(ICE);
+      setupPeerConnectionMonitor(peerConn);
+      // track نوێ زیاد بکە
+      freshStream.getTracks().forEach(function(t){ peerConn.addTrack(t, freshStream); });
+      peerConn.ontrack = function(e){
+        remoteAudioEl.srcObject = e.streams[0];
+        remoteAudioEl.play().catch(function(){});
+      };
+      // ICE کۆنەکان پاک بکەرەوە
+      db.ref('calls/'+me.uid+'_'+uid+'/ice_offer').remove();
+      db.ref('calls/'+me.uid+'_'+uid+'/ice_answer').remove();
+      peerConn.onicecandidate = function(e){
+        if(e.candidate) db.ref('calls/'+me.uid+'_'+uid+'/ice_offer').push(e.candidate.toJSON());
+      };
+      peerConn.createOffer({ offerToReceiveAudio:true, iceRestart:true }).then(function(offer){
+        return peerConn.setLocalDescription(offer).then(function(){ return offer; });
+      }).then(function(offer){
+        db.ref('calls/'+me.uid+'_'+uid).update({
+          offer:{ type:offer.type, sdp:offer.sdp },
+          status:'reconnecting',
+          ts: Date.now()
+        });
+        isReconnecting = false;
+        // گوێ بگرە بە answer نوێ
+        db.ref('calls/'+me.uid+'_'+uid+'/answer').off();
+        db.ref('calls/'+me.uid+'_'+uid+'/answer').on('value', function(snap){
+          if(!snap.exists()) return;
+          if(peerConn && peerConn.signalingState === 'have-local-offer'){
+            peerConn.setRemoteDescription(snap.val()).then(function(){
+              G('callStatus').textContent = '🟢 وەصڵبووە';
+              // ICE candidates ی callee زیاد بکە
+              db.ref('calls/'+me.uid+'_'+uid+'/ice_answer').once('value').then(function(iceSnap){
+                if(iceSnap.exists()) iceSnap.forEach(function(c){
+                  peerConn.addIceCandidate(c.val()).catch(function(){});
+                });
+              });
+            }).catch(function(){});
+          }
+        });
+      }).catch(function(e){ isReconnecting = false; });
+
+    } else {
+      // CALLEE: چاوەڕوانی offer نوێ بم لە Firebase
+      isReconnecting = false;
+      G('callStatus').textContent = '⏳ چاوەڕێی وەصڵبوونەوە...';
+      var callKey = currentCallUid + '_' + me.uid;
+      db.ref('calls/'+callKey).off();
+      db.ref('calls/'+callKey).on('value', function(snap){
+        if(!snap.exists() || !currentCallUid) return;
+        var d = snap.val();
+        if(d.status === 'reconnecting' && d.offer && peerConn === null){
+          // offer نوێ گەیشت — answer بدە
+          peerConn = new RTCPeerConnection(ICE);
+          setupPeerConnectionMonitor(peerConn);
+          freshStream.getTracks().forEach(function(t){ peerConn.addTrack(t, freshStream); });
+          peerConn.ontrack = function(e){
+            remoteAudioEl.srcObject = e.streams[0];
+            remoteAudioEl.play().catch(function(){});
+          };
+          peerConn.onicecandidate = function(e){
+            if(e.candidate) db.ref('calls/'+callKey+'/ice_answer').push(e.candidate.toJSON());
+          };
+          peerConn.setRemoteDescription(d.offer).then(function(){
+            db.ref('calls/'+callKey+'/ice_offer').once('value').then(function(iceSnap){
+              if(iceSnap.exists()) iceSnap.forEach(function(c){
+                peerConn.addIceCandidate(c.val()).catch(function(){});
+              });
+              return peerConn.createAnswer();
+            }).then(function(answer){
+              return peerConn.setLocalDescription(answer).then(function(){ return answer; });
+            }).then(function(answer){
+              db.ref('calls/'+callKey).update({
+                answer:{ type:answer.type, sdp:answer.sdp },
+                status:'active'
+              });
+              G('callStatus').textContent = '🟢 وەصڵبووە';
+              db.ref('calls/'+callKey).off();
+            }).catch(function(){});
+          }).catch(function(){});
+        }
+      });
+    }
+  }).catch(function(e){
+    isReconnecting = false;
+    showToast('⚠️ مایکرۆفۆن نەگەشتە', true);
+  });
+}
+
+// پارێزگاری: ئایا من caller ام یا callee
+var _iAmCallee = false;
+
+// ICE candidate buffer — ئیش دەکات پێش ئەوەی remoteDescription دانرێت
+var _iceCandidateBuffer = [];
+function flushIceBuffer(pc){
+  _iceCandidateBuffer.forEach(function(c){
+    pc.addIceCandidate(c).catch(function(){});
+  });
+  _iceCandidateBuffer = [];
+}
+
+// ============================================================
+// WebRTC
+var ICE = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    // TURN servers — Android background پێویستیەتی
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
+  ],
+  iceCandidatePoolSize: 10,
+  iceTransportPolicy: 'all',
+  bundlePolicy: 'max-bundle',
+  rtcpMuxPolicy: 'require'
+};
+
+function getMic(cb){
+  try {
+    // چەک ١: HTTPS پێویستە
+    if(location.protocol !== 'https:' && location.hostname !== 'localhost'){
+      showMicError('پێویستە سایت لە HTTPS بکرێتەوە');
+      cb(false); return;
+    }
+    // چەک ٢: API بەردەستە؟
+    if(!navigator || !navigator.mediaDevices){
+      showMicError('بروزەرەکەت مایکرۆفۆن پشتگیری ناکات — Chrome نوێ بەکاربهێنە');
+      cb(false); return;
+    }
+    if(typeof navigator.mediaDevices.getUserMedia !== 'function'){
+      showMicError('نەتوانرا مایکرۆفۆن بکرێتەوە — Chrome نوێ بەکاربهێنە');
+      cb(false); return;
+    }
+    // چەک ٣: ئەگەر پێشتر stream هەیە و track زیندووە
+    if(localStream && localStream.active){
+      var tracks = localStream.getAudioTracks();
+      if(tracks.length > 0 && tracks[0].readyState === 'live'){
+        cb(true); return;
+      }
+      // track کوژاوە — stream کۆنەکە بکوژێنە
+      localStream.getTracks().forEach(function(t){ t.stop(); });
+      localStream = null;
+    }
+    navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        channelCount: 1
+      },
+      video: false
+    })
+      .then(function(stream){
+        localStream = stream;
+        // Chrome Android Fix: stream بە AudioContext ببەستە
+        anchorStreamToAudioContext(stream);
+        hideMicError();
+        hideMicBanner();
+        cb(true);
+      })
+      .catch(function(err){
+        var name = err ? (err.name || '') : '';
+        if(name === 'NotAllowedError' || name === 'PermissionDeniedError'){
+          showMicPermissionGuide();
+        } else if(name === 'NotFoundError' || name === 'DevicesNotFoundError'){
+          showMicError('مایکرۆفۆن نەدۆزرایەوە لەم ئامێرەدا');
+        } else if(name === 'NotReadableError' || name === 'TrackStartError'){
+          showMicError('مایکرۆفۆن بەکارهاتووە لە ئەپێکی تر — ببەیە داخو دووبارە بکەرەوە');
+        } else if(name === 'OverconstrainedError'){
+          showMicError('مایکرۆفۆن پێداویستییەکەی پشتگیری ناکات');
+        } else {
+          showMicError('کێشەی مایکرۆفۆن: ' + (name || err));
+        }
+        cb(false);
+      });
+  } catch(e){
+    showMicError('هەڵەی نەچاوەڕوانکراو: ' + (e.message || e));
+    cb(false);
+  }
+}
+
+function showMicError(msg){
+  var el = document.getElementById('micErrorBar');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'micErrorBar';
+    el.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#ff3d5a;color:#fff;font-family:Tajawal,sans-serif;font-weight:700;text-align:center;padding:14px 16px;z-index:500;font-size:0.92rem;';
+    document.body.appendChild(el);
+  }
+  el.textContent = '🎤 ' + msg;
+  el.style.display = 'block';
+}
+
+function hideMicError(){
+  var el = document.getElementById('micErrorBar');
+  if(el) el.style.display = 'none';
+  var guide = document.getElementById('micGuide');
+  if(guide) guide.remove();
+}
+
+function showMicPermissionGuide(){
+  var existing = document.getElementById('micGuide');
+  if(existing) return;
+  var guide = document.createElement('div');
+  guide.id = 'micGuide';
+  guide.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#111827;border-top:2px solid #ff3d5a;color:#e0f0ff;font-family:Tajawal,sans-serif;padding:20px 16px;z-index:500;';
+  guide.innerHTML =
+    '<div style="font-size:1rem;font-weight:900;color:#ff3d5a;margin-bottom:12px">🎤 ئیجازەی مایکرۆفۆن پێویستە</div>'+
+    '<div style="font-size:0.85rem;line-height:1.8;color:#a0b0c0">'+
+      '<b style="color:#00e5ff">Chrome Android:</b><br>'+
+      '⚙️ سێ خاڵی سەرەوە ← Settings ← Site settings ← Microphone ← ئەم سایتە ← Allow<br><br>'+
+      '<b style="color:#00e5ff">یان:</b> لە باری ئەدرەس کلیک بکە لەسەر 🔒 ← Permissions ← Microphone ← Allow'+
+    '</div>'+
+    '<div style="display:flex;gap:10px;margin-top:14px">'+
+      '<button onclick="document.getElementById(\'micGuide\').remove();navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){localStream=s;hideMicError();}).catch(function(){})" style="flex:1;background:#00e5ff;color:#000;border:none;border-radius:10px;padding:11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer">🔄 دووبارە هەوڵبدە</button>'+
+      '<button onclick="document.getElementById(\'micGuide\').remove()" style="flex:1;background:rgba(255,255,255,0.08);color:#e0f0ff;border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:11px;font-family:Tajawal,sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer">داخستن</button>'+
+    '</div>';
+  document.body.appendChild(guide);
+}
+
+
+function startCall(uid, name){
+  getMic(function(ok){
+    if(!ok) return;
+    _iAmCallee = false;
+    _iceCandidateBuffer = [];
+    reconnectAttempts = 0;
+    currentCallUid = uid;
+    startSilentAudio();
+    requestWakeLock();
+    startHeartbeat(true);
+    setupMediaSession(name);
+    startSWPing(name);
+    startAndroidTrackMonitor();
+    showCallNotification(name);
+    peerConn = new RTCPeerConnection(ICE);
+    setupPeerConnectionMonitor(peerConn);
+    localStream.getTracks().forEach(function(t){ peerConn.addTrack(t, localStream); });
+    peerConn.ontrack = function(e){
+      remoteAudioEl.srcObject = e.streams[0];
+      remoteAudioEl.play().catch(function(){});
+    };
+    peerConn.onicecandidate = function(e){
+      if(e.candidate) db.ref('calls/'+me.uid+'_'+uid+'/ice_offer').push(e.candidate.toJSON());
+    };
+    peerConn.createOffer({ offerToReceiveAudio: true }).then(function(offer){
+      return peerConn.setLocalDescription(offer).then(function(){ return offer; });
+    }).then(function(offer){
+      db.ref('calls/'+me.uid+'_'+uid).set({
+        offer:{type:offer.type,sdp:offer.sdp},
+        callerUid:me.uid, callerName:me.name,
+        status:'calling', ts:Date.now()
+      });
+      showCallOverlay(name, '📞 پەیوەندی دەکرێت...');
+      db.ref('calls/'+me.uid+'_'+uid+'/answer').on('value', function(snap){
+        if(!snap.exists()) return;
+        if(peerConn && peerConn.signalingState==='have-local-offer'){
+          peerConn.setRemoteDescription(snap.val()).then(function(){
+            G('callStatus').textContent = '🟢 وەصڵبووە';
+            // ICE candidates ی callee buffer ی هەبوو زیاد بکە
+            db.ref('calls/'+me.uid+'_'+uid+'/ice_answer').once('value').then(function(iceSnap){
+              if(iceSnap.exists()) iceSnap.forEach(function(c){
+                peerConn.addIceCandidate(c.val()).catch(function(){});
+              });
+            });
+            // گوێ بگرە بە ICE candidates ی تازەی callee
+            db.ref('calls/'+me.uid+'_'+uid+'/ice_answer').on('child_added', function(c){
+              if(peerConn && peerConn.remoteDescription){
+                peerConn.addIceCandidate(c.val()).catch(function(){});
+              }
+            });
+          }).catch(function(){});
+        }
+      });
+      db.ref('calls/'+me.uid+'_'+uid+'/status').on('value', function(snap){
+        if(snap.val()==='ended'||snap.val()==='rejected') endCall();
+      });
+    });
+  });
+}
+
+function listenIncoming(){
+  db.ref('calls').on('value', function(snap){
+    if(!snap.exists()) return;
+    snap.forEach(function(callSnap){
+      var d = callSnap.val();
+      if(!d) return;
+      var key = callSnap.key;
+      if(key.endsWith('_'+me.uid) && d.status==='calling' && d.callerUid!==me.uid){
+        incomingCallData = { key:key, callerUid:d.callerUid, callerName:d.callerName, offer:d.offer };
+        G('incomingName').textContent = d.callerName;
+        G('incomingOverlay').className = 'incoming-overlay show';
+      }
+    });
+  });
+}
+
+G('btnAcceptCall').onclick = function(){
+  if(!incomingCallData) return;
+  var d = incomingCallData;
+  G('incomingOverlay').className = 'incoming-overlay';
+  getMic(function(ok){
+    if(!ok) return;
+    _iAmCallee = true;
+    _iceCandidateBuffer = [];
+    reconnectAttempts = 0;
+    currentCallUid = d.callerUid;
+    startSilentAudio();
+    requestWakeLock();
+    startHeartbeat(true);
+    setupMediaSession(d.callerName);
+    startSWPing(d.callerName);
+    startAndroidTrackMonitor();
+    showCallNotification(d.callerName);
+    peerConn = new RTCPeerConnection(ICE);
+    setupPeerConnectionMonitor(peerConn);
+    localStream.getTracks().forEach(function(t){ peerConn.addTrack(t, localStream); });
+    peerConn.ontrack = function(e){
+      remoteAudioEl.srcObject = e.streams[0];
+      remoteAudioEl.play().catch(function(){});
+    };
+    peerConn.onicecandidate = function(e){
+      if(e.candidate) db.ref('calls/'+d.key+'/ice_answer').push(e.candidate.toJSON());
+    };
+    peerConn.setRemoteDescription(d.offer).then(function(){
+      // گوێ بگرە بە ICE candidates ی تازەی caller
+      db.ref('calls/'+d.key+'/ice_offer').on('child_added', function(c){
+        if(peerConn && peerConn.remoteDescription){
+          peerConn.addIceCandidate(c.val()).catch(function(){});
+        }
+      });
+      db.ref('calls/'+d.key+'/ice_offer').once('value').then(function(iceSnap){
+        if(iceSnap.exists()) iceSnap.forEach(function(c){ peerConn.addIceCandidate(c.val()).catch(function(){}); });
+        return peerConn.createAnswer();
+      }).then(function(answer){
+        return peerConn.setLocalDescription(answer).then(function(){ return answer; });
+      }).then(function(answer){
+        db.ref('calls/'+d.key).update({ answer:{type:answer.type,sdp:answer.sdp}, status:'active' });
+        showCallOverlay(d.callerName, '🟢 وەصڵبووە');
+      });
+    });
+  });
+};
+
+G('btnReject').onclick = function(){
+  if(!incomingCallData) return;
+  db.ref('calls/'+incomingCallData.key).update({ status:'rejected' });
+  incomingCallData = null;
+  G('incomingOverlay').className = 'incoming-overlay';
+};
+
+G('btnEndCall').onclick = function(){ endCall(); };
+
+function endCall(){
+  reconnectAttempts = 0;
+  isReconnecting = false;
+  if(reconnectTimer){ clearTimeout(reconnectTimer); reconnectTimer = null; }
+  if(currentCallUid){
+    // Firebase listeners پاک بکەرەوە
+    var keyA = me.uid+'_'+currentCallUid;
+    var keyB = currentCallUid+'_'+me.uid;
+    db.ref('calls/'+keyA+'/answer').off();
+    db.ref('calls/'+keyA+'/status').off();
+    db.ref('calls/'+keyA+'/ice_answer').off();
+    db.ref('calls/'+keyB).off();
+    db.ref('calls/'+keyB+'/ice_offer').off();
+    db.ref('calls/'+keyA).update({ status:'ended' }).catch(function(){});
+    db.ref('calls/'+keyB).update({ status:'ended' }).catch(function(){});
+  }
+  if(peerConn){ peerConn.close(); peerConn = null; }
+  if(localStream){ localStream.getTracks().forEach(function(t){ t.stop(); }); localStream = null; }
+  // AudioContext anchor پاک بکەرەوە
+  if(_micSourceNode){ try{ _micSourceNode.disconnect(); }catch(e){} _micSourceNode = null; }
+  remoteAudioEl.srcObject = null;
+  stopSilentAudio();
+  releaseWakeLock();
+  stopHeartbeat();
+  clearMediaSession();
+  stopSWPing();
+  stopAndroidTrackMonitor();
+  hideCallNotification();
+  hideMicRestoreBtn();
+  _iceCandidateBuffer = [];
+  currentCallUid = null; isMuted = false;
+  G('callOverlay').className = 'call-overlay';
+  G('muteBtn').textContent = '🎤';
+  G('muteBtn').className = 'call-btn call-btn-mute';
+  startHeartbeat(false);
+}
+
+G('muteBtn').onclick = function(){
+  isMuted = !isMuted;
+  if(localStream) localStream.getAudioTracks().forEach(function(t){ t.enabled = !isMuted; });
+  G('muteBtn').textContent = isMuted ? '🔇' : '🎤';
+  G('muteBtn').className = 'call-btn call-btn-mute' + (isMuted ? ' muted' : '');
+  showToast(isMuted ? '🔇 بێدەنگ کرایت' : '🎤 دەنگت چالاک بوو');
+};
+
+function showCallOverlay(name, status){
+  G('callAvatar').innerHTML = avatarLetter(name)+'<div class="call-ring"></div><div class="call-ring2"></div>';
+  G('callName').textContent = name;
+  G('callStatus').textContent = status;
+  G('callOverlay').className = 'call-overlay show';
+}
+
+// ============================================================
+// ANDROID BACKGROUND FIX
+// ============================================================
+
+// Service Worker تۆمار بکە
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  var swCode = `
+self.addEventListener('install', function(e){ self.skipWaiting(); });
+self.addEventListener('activate', function(e){ e.waitUntil(clients.claim()); });
+
+var pingInterval = null;
+var callName = '';
+
+self.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'START_CALL'){
+    callName = e.data.name || 'KonTalk';
+
+    function showOngoingNotif(){
+      var mins = Math.floor(callDuration / 60);
+      var secs = callDuration % 60;
+      var timeStr = (mins > 0 ? mins + ':' : '') + (secs < 10 ? '0' : '') + secs;
+      self.registration.showNotification('📞 ' + callName + ' — ' + timeStr, {
+        body: '🎤 بکە لێرە بۆ گەڕانەوە — دەنگت بۆ دەچێت',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎴</text></svg>',
+        badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📞</text></svg>',
+        tag: 'kontalk-active-call',
+        renotify: true,
+        silent: true,
+        requireInteraction: true,
+        actions: [
+          { action: 'open', title: '📱 گەڕانەوە' },
+          { action: 'end',  title: '📵 کۆتایی' }
+        ],
+        data: { action: 'call' }
+      }).catch(function(){});
+    }
+
+    // دەستپێکردن بە دەنگ یەک جار — Chrome دەزانێت ئەپ چالاکە
+    self.registration.showNotification('📞 ' + callName, {
+      body: '🎤 پەیوەندی دەستکرد',
+      icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🎴</text></svg>',
+      badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">📞</text></svg>',
+      tag: 'kontalk-active-call',
+      renotify: false,
+      silent: false,
+      requireInteraction: true,
+      actions: [
+        { action: 'open', title: '📱 گەڕانەوە' },
+        { action: 'end',  title: '📵 کۆتایی' }
+      ],
+      data: { action: 'call' }
+    }).catch(function(){});
+
+    // Ping + کات بژمێرە + notification هەر ٣٠ چرکەیەک نوێ بکەرەوە
+    var callDuration = 0;
+    if(pingInterval) clearInterval(pingInterval);
+    pingInterval = setInterval(function(){
+      callDuration += 4;
+      // پەیام بنێرە بۆ tab
+      self.clients.matchAll({includeUncontrolled:true, type:'window'}).then(function(clients){
+        clients.forEach(function(c){ c.postMessage({type:'PING'}); });
+      });
+      // هەر ٣٢ چرکەیەک (٨ × ٤) notification نوێ بکەرەوە بە بێدەنگ
+      // ئەمە Chrome دەگەیێنێت پەیوەندی بەردەوامە
+      if(callDuration % 32 === 0){
+        showOngoingNotif();
+      }
+    }, 4000);
+  }
+
+  if(e.data === 'START_PING'){
+    if(pingInterval) clearInterval(pingInterval);
+    pingInterval = setInterval(function(){
+      self.clients.matchAll({includeUncontrolled:true, type:'window'}).then(function(clients){
+        clients.forEach(function(c){ c.postMessage({type:'PING'}); });
+      });
+    }, 4000);
+  }
+
+  if(e.data === 'STOP_PING' || (e.data && e.data.type === 'END_CALL')){
+    if(pingInterval){ clearInterval(pingInterval); pingInterval = null; }
+    // Notification ببەستە
+    self.registration.getNotifications({tag:'kontalk-active-call'}).then(function(notes){
+      notes.forEach(function(n){ n.close(); });
+    }).catch(function(){});
+  }
+});
+
+// Notification کلیک کرا
+self.addEventListener('notificationclick', function(e){
+  e.notification.close();
+  if(e.action === 'end'){
+    // کۆتایی بە پەیوەندی
+    self.clients.matchAll({type:'window'}).then(function(cs){
+      cs.forEach(function(c){ c.postMessage({type:'END_CALL_FROM_NOTIFICATION'}); });
+    });
+    return;
+  }
+  // کردنەوە یان کلیکی ئاسایی — تاب ئەکرێتەوە
+  e.waitUntil(
+    self.clients.matchAll({type:'window', includeUncontrolled:true}).then(function(cs){
+      if(cs.length) return cs[0].focus();
+      return self.clients.openWindow('./');
+    })
+  );
+});
+`;
+  var blob = new Blob([swCode], {type:'application/javascript'});
+  var swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl, {scope:'/'}).then(function(reg){
+    console.log('SW registered');
+    navigator.serviceWorker.addEventListener('message', function(e){
+      var msg = e.data;
+      if(!msg) return;
+      // پیام کۆنەکانی string هەروەها پشتگیری بکە
+      if(msg === 'PING' || msg.type === 'PING'){
+        if(!currentCallUid) return;
+        forceAndroidAudioResume();
+        if(remoteAudioEl.paused && remoteAudioEl.srcObject){
+          remoteAudioEl.play().catch(function(){});
+        }
+        keepAliveAudio.play().catch(function(){});
+        if(localStream){
+          var tracks = localStream.getAudioTracks();
+          var dead = tracks.length === 0 || tracks.every(function(t){ return t.readyState === 'ended'; });
+          if(dead) repairAndroidMic();
+          else tracks.forEach(function(t){ if(!isMuted) t.enabled = true; });
+        } else if(currentCallUid){
+          repairAndroidMic();
+        }
+      }
+      if(msg.type === 'END_CALL_FROM_NOTIFICATION'){
+        endCall();
+      }
+    });
+  }).catch(function(e){ console.log('SW failed:', e); });
+}
+
+// Notification ئیجازە داوا بکە — پێویستە بۆ مایکزیندوو‌نگەداری
+function requestNotificationPermission(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted') return;
+  // داوا بکە — Chrome Android پێویستیەتی بۆ ongoing notification
+  Notification.requestPermission().then(function(result){
+    console.log('Notification permission:', result);
+  }).catch(function(){});
+}
+
+// Notification ئێستا بە SW دەکرێت لە startSWPing — ئەمە خاڵی بەردەوامی بۆ مانەوەی کۆد
+var callNotification = null;
+function showCallNotification(name){ /* SW handles this now */ }
+function hideCallNotification(){
+  // SW notification ببەستە
+  if(navigator.serviceWorker && navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({ type: 'END_CALL' });
+  }
+  callNotification = null;
+}
+
+// SW پەیام بنێرە — پەیوەندی دەستبکرد
+function startSWPing(name){
+  if(!navigator.serviceWorker) return;
+  function send(sw){ sw.postMessage({ type: 'START_CALL', name: name || 'پەیوەندی' }); }
+  var sw = navigator.serviceWorker.controller;
+  if(sw){ send(sw); return; }
+  // controller هێشتا ئامادە نییە — چاوەڕوێ بکە
+  navigator.serviceWorker.ready.then(function(reg){
+    if(reg.active) send(reg.active);
+    // دووبارە هەوڵ بدەرەوە دوای ١ چرکە
+    setTimeout(function(){
+      var sw2 = navigator.serviceWorker.controller;
+      if(sw2) send(sw2);
+    }, 1000);
+  }).catch(function(){});
+}
+function stopSWPing(){
+  if(!navigator.serviceWorker) return;
+  function send(sw){ sw.postMessage({ type: 'END_CALL' }); }
+  var sw = navigator.serviceWorker.controller;
+  if(sw){ send(sw); return; }
+  navigator.serviceWorker.ready.then(function(reg){
+    if(reg.active) send(reg.active);
+  }).catch(function(){});
+}
+
+// دەستپێکردن
+registerServiceWorker();
+requestNotificationPermission();
+
+</script>
+</body>
+</html>
